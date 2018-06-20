@@ -1,13 +1,10 @@
 package com.vahundos.companies.service;
 
+import com.vahundos.companies.AbstractTest;
 import com.vahundos.companies.model.Company;
 import com.vahundos.companies.to.CompanyTo;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -15,23 +12,20 @@ import java.util.NoSuchElementException;
 import static com.vahundos.companies.CompanyTestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@Sql({"/db/init_db.sql", "/db/populate_db.sql"})
-public class CompanyServiceImplTest {
+public class CompanyServiceImplTest extends AbstractTest {
 
     @Autowired
     private CompanyService service;
 
     @Test
-    public void findById() {
+    public void testFindById() {
         CompanyTo company = service.findById(COMPANY_WITH_CHILDREN_TO1.getId());
 
         assertMatch(COMPANY_WITH_CHILDREN_TO1, company);
     }
 
     @Test
-    public void findAll() {
+    public void testFindAll() {
         List<CompanyTo> companies = service.findAll();
 
         assertThat(companies.size()).isEqualTo(7);
@@ -40,7 +34,7 @@ public class CompanyServiceImplTest {
     }
 
     @Test
-    public void findAllWithChildren() {
+    public void testFindAllWithChildren() {
         List<CompanyTo> companiesWithChildren = service.findAllWithChildren();
 
         assertThat(companiesWithChildren.size()).isEqualTo(2);
@@ -49,14 +43,14 @@ public class CompanyServiceImplTest {
     }
 
     @Test(expected = NoSuchElementException.class)
-    public void delete() {
+    public void testDelete() {
         service.delete(COMPANY_TO1.getId());
         service.findById(COMPANY_TO1.getId());
     }
 
     @Test
-    public void create() {
-        CompanyTo forCreation = new CompanyTo(null, "created", 250);
+    public void testCreate() {
+        CompanyTo forCreation = getForCreation();
         Company createdCompany = service.create(forCreation);
         forCreation.setId(createdCompany.getId());
 
@@ -65,9 +59,8 @@ public class CompanyServiceImplTest {
     }
 
     @Test
-    public void update() {
-        CompanyTo forUpdate = new CompanyTo(COMPANY_WITH_CHILDREN_TO1.getId(), COMPANY_WITH_CHILDREN_TO1.getName(),
-                COMPANY_WITH_CHILDREN_TO1.getAnnualEarnings());
+    public void testUpdate() {
+        CompanyTo forUpdate = getForUpdate();
 
         service.update(forUpdate);
         CompanyTo actuallyUpdated = service.findById(forUpdate.getId());

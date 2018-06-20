@@ -1,8 +1,6 @@
 package com.vahundos.companies;
 
 import com.vahundos.companies.to.CompanyTo;
-import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
 
@@ -25,6 +23,15 @@ public class CompanyTestData {
     public static final CompanyTo COMPANY_WITH_CHILDREN_TO5 = new CompanyTo(5, "Company5", 10, 30, new ArrayList<>());
     public static final CompanyTo COMPANY_WITH_CHILDREN_TO6 = new CompanyTo(6, "Company6", 15, 15, new ArrayList<>());
     public static final CompanyTo COMPANY_WITH_CHILDREN_TO7 = new CompanyTo(7, "Company7", 5, 5, new ArrayList<>());
+
+    public static CompanyTo getForCreation() {
+        return new CompanyTo(null, "created", 250);
+    }
+
+    public static CompanyTo getForUpdate() {
+        return new CompanyTo(COMPANY_WITH_CHILDREN_TO1.getId(), COMPANY_WITH_CHILDREN_TO1.getName(),
+                COMPANY_WITH_CHILDREN_TO1.getAnnualEarnings());
+    }
 
     static {
         COMPANY_WITH_CHILDREN_TO1.getChildren().add(COMPANY_WITH_CHILDREN_TO2);
