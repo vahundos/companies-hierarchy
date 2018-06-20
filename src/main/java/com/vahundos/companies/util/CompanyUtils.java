@@ -21,6 +21,9 @@ public class CompanyUtils {
             int earningsWithChildren = company.getChildrenAnnualEarnings();
             CompanyTo companyTo = new CompanyTo(company.getId(), company.getName(), company.getAnnualEarnings(),
                     company.getAnnualEarnings() + earningsWithChildren, new ArrayList<>());
+            if (company.getParent() != null) {
+                companyTo.setParentId(company.getParent().getId());
+            }
 
             // fill list of company by children with calculating earnings
             fillCompanyToListWithChildren(companyTo.getChildren(), company.getChildren());
