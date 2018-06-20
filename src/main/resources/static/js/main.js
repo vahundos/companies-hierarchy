@@ -9,6 +9,7 @@ window.onload = function (ev) {
 
 function add() {
     form.find(":input").val("");
+    $("#removeButton").addClass("invisible");
     $("#editRow").modal();
     loadCompanyListToSelect();
 }
@@ -21,10 +22,11 @@ function update(company) {
     $("#annualEarnings").val(company.annualEarnings);
     $("#parentId").val(company.parent);
 
+    $("#removeButton").removeClass("invisible");
     $("#editRow").modal();
 }
 
-function save(isInsertion) {
+function save() {
     var company = {
         id: $("#id").val(),
         name: $("#name").val(),
@@ -33,7 +35,7 @@ function save(isInsertion) {
     };
 
     var method;
-    if (isInsertion) {
+    if (company.id === "") {
         method = 'POST';
     } else {
         method = 'PUT';
@@ -74,6 +76,17 @@ function loadCompanyListToSelect(selectedId) {
     });
 }
 
+function remove() {
+    $.ajax({
+        url: ajaxUrl + "/" + $("#id").val(),
+        type: 'DELETE',
+        success: function () {
+            $("#editRow").modal("hide");
+            loadCompaniesWithChildren();
+        }
+    })
+}
+
 function loadCompaniesWithChildren() {
     $.ajax({
         url: ajaxUrl + "/children",
@@ -82,7 +95,6 @@ function loadCompaniesWithChildren() {
         success: function (response) {
             updateTree(response);
             $('#tree').on('nodeSelected', function(event, data) {
-                console.log(data.text + " parentId = " + data.parentId);
                 update(data);
             });
         }

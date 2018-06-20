@@ -26,7 +26,7 @@ public class Company {
     @JoinColumn(name = "parent_id")
     private Company parent;
 
-    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn(name = "parent_id")
     private List<Company> children;
 

@@ -38,7 +38,7 @@ public class CompanyServiceImplTest extends AbstractTest {
         List<CompanyTo> companiesWithChildren = service.findAllWithChildren();
 
         assertThat(companiesWithChildren.size()).isEqualTo(2);
-        assertThat(companiesWithChildren).usingRecursiveFieldByFieldElementComparator()
+        assertThat(companiesWithChildren).usingElementComparatorIgnoringFields("parentId", "children")
                 .containsExactlyInAnyOrder(COMPANY_WITH_CHILDREN_TO1, COMPANY_WITH_CHILDREN_TO5);
     }
 
