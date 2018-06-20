@@ -1,7 +1,7 @@
 package com.vahundos.companies.service;
 
+import com.vahundos.companies.model.Company;
 import com.vahundos.companies.to.CompanyTo;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +10,10 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static com.vahundos.companies.CompanyTestData.*;
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -22,6 +22,13 @@ public class CompanyServiceImplTest {
 
     @Autowired
     private CompanyService service;
+
+    @Test
+    public void findById() {
+        CompanyTo company = service.findById(COMPANY_WITH_CHILDREN_TO1.getId());
+
+        assertMatch(COMPANY_WITH_CHILDREN_TO1, company);
+    }
 
     @Test
     public void findAll() {
@@ -39,5 +46,32 @@ public class CompanyServiceImplTest {
         assertThat(companiesWithChildren.size()).isEqualTo(2);
         assertThat(companiesWithChildren).usingRecursiveFieldByFieldElementComparator()
                 .containsExactlyInAnyOrder(COMPANY_WITH_CHILDREN_TO1, COMPANY_WITH_CHILDREN_TO5);
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void delete() {
+        service.delete(COMPANY_TO1.getId());
+        service.findById(COMPANY_TO1.getId());
+    }
+
+    @Test
+    public void create() {
+        CompanyTo forCreation = new CompanyTo(null, "created", 250);
+        Company createdCompany = service.create(forCreation);
+        forCreation.setId(createdCompany.getId());
+
+        CompanyTo actuallyCreatedTo = service.findById(forCreation.getId());
+        assertMatch(forCreation, actuallyCreatedTo);
+    }
+
+    @Test
+    public void update() {
+        CompanyTo forUpdate = new CompanyTo(COMPANY_WITH_CHILDREN_TO1.getId(), COMPANY_WITH_CHILDREN_TO1.getName(),
+                COMPANY_WITH_CHILDREN_TO1.getAnnualEarnings());
+
+        service.update(forUpdate);
+        CompanyTo actuallyUpdated = service.findById(forUpdate.getId());
+
+        assertMatch(forUpdate, actuallyUpdated);
     }
 }

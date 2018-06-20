@@ -15,27 +15,33 @@ import java.util.List;
 public class Company {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String name;
 
-    private int annualEarnings;
+    private Integer annualEarnings;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
     private Company parent;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "parent_id")
     private List<Company> children;
 
-    public Company(String name, int annualEarnings, Company parent) {
+    public Company(Integer id, String name, Integer annualEarnings, Company parent) {
+        this(name, annualEarnings, parent);
+        this.id = id;
+    }
+
+    public Company(String name, Integer annualEarnings, Company parent) {
         this.name = name;
         this.annualEarnings = annualEarnings;
         this.parent = parent;
     }
 
-    public Company(String name, int annualEarnings) {
+    public Company(String name, Integer annualEarnings) {
         this(name, annualEarnings, null);
     }
 

@@ -1,8 +1,12 @@
 package com.vahundos.companies;
 
 import com.vahundos.companies.to.CompanyTo;
+import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CompanyTestData {
 
@@ -30,5 +34,9 @@ public class CompanyTestData {
 
         COMPANY_WITH_CHILDREN_TO5.getChildren().add(COMPANY_WITH_CHILDREN_TO6);
         COMPANY_WITH_CHILDREN_TO5.getChildren().add(COMPANY_WITH_CHILDREN_TO7);
+    }
+
+    public static void assertMatch(CompanyTo expected, CompanyTo actually) {
+        assertThat(actually).isEqualToIgnoringGivenFields(expected, "annualEarningsWithChildren", "parentId", "children");
     }
 }

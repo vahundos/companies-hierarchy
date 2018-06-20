@@ -12,4 +12,8 @@ public interface CompanyRepository extends JpaRepository<Company, Integer> {
 
     @Query("SELECT DISTINCT c FROM Company c LEFT JOIN FETCH c.children ORDER BY c.name")
     List<Company> findAllWithChildren();
+
+    default Company getOneOrNull(Integer id) {
+        return id == null ? null : getOne(id);
+    }
 }

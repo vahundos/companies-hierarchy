@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.vahundos.companies.util.CompanyUtils.*;
+
 @Service
 @Transactional(readOnly = true)
 public class CompanyServiceImpl implements CompanyService {
@@ -20,6 +22,11 @@ public class CompanyServiceImpl implements CompanyService {
     @Autowired
     public CompanyServiceImpl(CompanyRepository repository) {
         this.repository = repository;
+    }
+
+    @Override
+    public CompanyTo findById(int id) {
+        return createCompanyToFromEntity(repository.findById(id).get());
     }
 
     @Override
@@ -39,16 +46,31 @@ public class CompanyServiceImpl implements CompanyService {
         return result;
     }
 
-    private void fillCompanyToListWithChildren(List<CompanyTo> result, List<Company> topLevelCompanies) {
-        for (Company company : topLevelCompanies) {
-            int earningsWithChildren = company.getChildrenAnnualEarnings();
-            CompanyTo companyTo = new CompanyTo(company.getId(), company.getName(), company.getAnnualEarnings(),
-                    company.getAnnualEarnings() + earningsWithChildren, new ArrayList<>());
+    @Override
+    @Transactional
+    public void delete(int id) {
+        repository.deleteById(id);
+    }
 
-            // fill list of company by children with calculating earnings
-            fillCompanyToListWithChildren(companyTo.getChildren(), company.getChildren());
-
-            result.add(companyTo);
+    @Override
+    @Transactional
+    public Company create(CompanyTo company) {
+        if (company.getId() != null) {
+            throw new IllegalStateException("Can't create company with existing id = " + company.getId());
         }
+
+        return repository.save(createCompanyFromTo(company, repository.getOneOrNull(company.getParentId())));
+    }
+
+    @Override
+    @Transactional
+    public void update(CompanyTo company) {
+        if (company.getId() == null) {
+            throw new IllegalStateException("Can't update company with null id");
+        }
+
+        Company companyFromTo = createCompanyFromTo(company, repository.getOneOrNull(company.getParentId()));
+        companyFromTo.setChildren(repository.findById(company.getId()).get().getChildren());
+        repository.save(companyFromTo);
     }
 }
