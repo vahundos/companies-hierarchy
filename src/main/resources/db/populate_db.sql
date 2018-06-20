@@ -1,5 +1,7 @@
 DELETE FROM companies;
 
+ALTER SEQUENCE companies_id_seq RESTART WITH 1;
+
 INSERT INTO companies (name, annual_earnings, parent_id) VALUES
   ('Company1', 25, null),
   ('Company2', 13, 1),
@@ -7,4 +9,4 @@ INSERT INTO companies (name, annual_earnings, parent_id) VALUES
   ('Company4', 10, 1),
   ('Company5', 10, null),
   ('Company6', 15, 5),
-  ('Company7', 5, 5)
+  ('Company7', 5, 5);
