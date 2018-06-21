@@ -46,13 +46,16 @@ function save() {
         type: method,
         data: JSON.stringify(company),
         contentType: "application/json; charset=utf-8",
-        dataType: 'json'
-    }).done(function () {
-        $("#editRow").modal("hide");
-        loadCompaniesWithChildren()
-    }).fail(function () {
-        $("#editRow").modal("hide");
-        loadCompaniesWithChildren()
+        success: function () {
+            $("#editRow").modal("hide");
+            successNoty("Data changed successful");
+            loadCompaniesWithChildren()
+        },
+        error: function (response) {
+            $("#editRow").modal("hide");
+            failNoty("Error during data changing");
+            loadCompaniesWithChildren()
+        }
     });
 }
 
@@ -82,6 +85,12 @@ function remove() {
         type: 'DELETE',
         success: function () {
             $("#editRow").modal("hide");
+            successNoty("Node was successfully deleted");
+            loadCompaniesWithChildren();
+        },
+        fail: function () {
+            $("#editRow").modal("hide");
+            successNoty("Error during node deleting");
             loadCompaniesWithChildren();
         }
     })
@@ -108,6 +117,7 @@ function updateTree(response) {
     })
 }
 
+// update data for bootstrap tree
 function recursiveUpdateResponse(response) {
     for (i in response) {
         var company = response[i];
@@ -120,4 +130,22 @@ function recursiveUpdateResponse(response) {
             recursiveUpdateResponse(company.children);
         }
     }
+}
+
+function successNoty(text) {
+    new Noty({
+        text: "<span class='glyphicon glyphicon-ok'></span> &nbsp;" + text,
+        type: 'success',
+        layout: "bottomRight",
+        timeout: 1000
+    }).show();
+}
+
+function failNoty(text) {
+    failedNote = new Noty({
+        text: "<span class='glyphicon glyphicon-exclamation-sign'></span> &nbsp;" + text + ("<br>"),
+        type: "error",
+        layout: "bottomRight",
+        timeout: 1000
+    }).show();
 }
