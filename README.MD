@@ -4,7 +4,7 @@ Company hierarchy application developed with using Maven, Spring Boot (MVC, Data
 
 ## Running
 
-You can see application on heroku (first run after a long delay may take about 30 seconds): https://companies-hierarchy.herokuapp.com/  
+You can see application on heroku (first run after a long delay may take about 30 seconds): <https://companies-hierarchy.herokuapp.com/>  
 
 For running locally
 
@@ -14,7 +14,7 @@ For running locally
     mvn -Phsqldb spring-boot:run
 ```
 
-Make sure that `MAVEN_HOME/bin` added into PATH variable
+Make sure that `MAVEN_HOME/bin` added into PATH variable. You can then access here: <http://localhost:8080/>
 
 
 ## About task
