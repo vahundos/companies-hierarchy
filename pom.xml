@@ -119,7 +119,7 @@
         </profile>
 
         <profile>
-            <id>heroku</id>
+            <id>hsqldb</id>
             <dependencies>
                 <dependency>
                     <groupId>org.hsqldb</groupId>
@@ -135,6 +135,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <profiles>hsqldb</profiles>
+                </configuration>
             </plugin>
         </plugins>
     </build>
