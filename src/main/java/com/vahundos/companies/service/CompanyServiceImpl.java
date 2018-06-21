@@ -4,6 +4,8 @@ import com.vahundos.companies.model.Company;
 import com.vahundos.companies.repository.CompanyRepository;
 import com.vahundos.companies.to.CompanyTo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,12 +32,14 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    @Cacheable("companies")
     public List<CompanyTo> findAll() {
         return repository.findAll().stream()
                 .map(company -> new CompanyTo(company.getId(), company.getName())).collect(Collectors.toList());
     }
 
     @Override
+    @Cacheable("companiesWithChildren")
     public List<CompanyTo> findAllWithChildren() {
         List<Company> companies = repository.findAllWithChildren();
 
@@ -48,12 +52,14 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     @Transactional
+    @CacheEvict(value = {"companies", "companiesWithChildren"}, allEntries = true)
     public void delete(int id) {
         repository.deleteById(id);
     }
 
     @Override
     @Transactional
+    @CacheEvict(value = {"companies", "companiesWithChildren"}, allEntries = true)
     public Company create(CompanyTo company) {
         if (company.getId() != null) {
             throw new IllegalStateException("Can't create company with existing id = " + company.getId());
@@ -64,6 +70,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     @Transactional
+    @CacheEvict(value = {"companies", "companiesWithChildren"}, allEntries = true)
     public void update(CompanyTo company) {
         if (company.getId() == null) {
             throw new IllegalStateException("Can't update company with null id");
