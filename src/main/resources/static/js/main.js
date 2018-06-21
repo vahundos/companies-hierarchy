@@ -53,8 +53,15 @@ function save() {
         },
         error: function (response) {
             $("#editRow").modal("hide");
-            failNoty("Error during data changing");
-            loadCompaniesWithChildren()
+
+            var message = "";
+            var errors = response.responseJSON.errors;
+            for (i in errors) {
+                var error = errors[i];
+                message += error.field + ": " + error.defaultMessage + "<br>";
+            }
+
+            failNoty("Error during data changing <br>" + message);
         }
     });
 }
@@ -91,7 +98,6 @@ function remove() {
         fail: function () {
             $("#editRow").modal("hide");
             successNoty("Error during node deleting");
-            loadCompaniesWithChildren();
         }
     })
 }
@@ -146,6 +152,6 @@ function failNoty(text) {
         text: "<span class='glyphicon glyphicon-exclamation-sign'></span> &nbsp;" + text + ("<br>"),
         type: "error",
         layout: "bottomRight",
-        timeout: 1000
+        timeout: 2000
     }).show();
 }

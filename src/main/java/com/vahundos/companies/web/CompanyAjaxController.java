@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -42,12 +43,12 @@ public class CompanyAjaxController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void create(@RequestBody CompanyTo company) {
+    public void create(@Valid @RequestBody CompanyTo company) {
         service.create(company);
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void update(@RequestBody CompanyTo company) {
+    public void update(@Valid @RequestBody CompanyTo company) {
         service.update(company);
     }
 }
